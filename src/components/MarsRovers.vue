@@ -1,17 +1,30 @@
 <template>
     <div>
         <div style="padding-bottom: 20px;">Board Size</div>
-        <span>
-            <label for="board-width-input">Board Width:
-                <input id="board-width-input" v-model="boardWidth" :placeholder="pleaseEnter" type="number" min="0" style="width:5%; margin-right: 50px;">
-            </label>
-        </span>
-        <span>
-            <label for="board-height-input">Board Height:
-                <input id="board-height-input" v-model="boardHeight" :placeholder="pleaseEnter" type="number" min="0" style="width:5%;  margin-right: 50px;">
-            </label>
-        </span>
+        <div v-if="!boardSizeConfirmed">
+            <span>
+                <label for="board-width-input">Board Width:
+                    <input id="board-width-input" v-model="boardWidth" :placeholder="pleaseEnter" type="number" min="0" style="width:5%; margin-right: 50px;">
+                </label>
+            </span>
+            <span>
+                <label for="board-height-input">Board Height:
+                    <input id="board-height-input" v-model="boardHeight" :placeholder="pleaseEnter" type="number" min="0" style="width:5%;  margin-right: 50px;">
+                </label>
+            </span>
 
+            <span>
+                <button id="confirm-board-size" :placeholder="pleaseEnter" @click="confirmBoardSize()">Confirm</button>
+            </span>
+        </div>
+        <div v-else>
+            <span>
+                Board Width: {{boardWidth}}
+            </span>
+            <span>
+                Board Height: {{boardHeight}}
+            </span>
+        </div>
 
     <div style="padding-bottom: 20px; margin-top: 20px">Rovers
         <div v-for="(rover, index) in rovers" :key="'rover'+index" style="margin-top: 10px">
@@ -24,13 +37,6 @@
             </div>
         </div>
     </div>
-
-
-
-        <span>
-            <button :placeholder="pleaseEnter">Confirm</button>
-        </span>
-
 
     </div>
 </template>
@@ -47,6 +53,7 @@ export default {
     },
     data() {
         return {
+            boardSizeConfirmed: false,
             boardWidth: null,
             boardHeight: null,
             rovers: [{
@@ -59,6 +66,17 @@ export default {
     computed: {
         pleaseEnter() {
         return "Please give appropriate input"
+        }
+    },
+    methods: {
+        confirmBoardSize() {
+            if (this.boardWidth > 0 && this.boardHeight > 0) {
+                this.boardSizeConfirmed = true;
+            } else {
+                alert("Please enter appropriate values for the board size");
+            }
+            
+            return this.boardSizeConfirmed;
         }
     }
 }
