@@ -1,17 +1,27 @@
 <template>
-    <div>
-    </div>
+    <span>
+        <span v-if="roverFacing === null">
+            <span style="margin: 5px">
+                *
+            </span>
+        </span>
+        <span v-else>
+            <span v-if="roverFacing === 'N'" style="margin: 5px">↑</span>
+            <span v-if="roverFacing === 'S'" style="margin: 5px">↓</span>
+            <span v-if="roverFacing === 'E'" style="margin: 5px">→</span>
+            <span v-if="roverFacing === 'W'" style="margin: 5px">←</span>
+        </span>
+    </span>
 </template>
 
 <script>
 export default {
     name: 'BoardCell',
     props: {
-        rover: {
-            type: Object,
-            default() {
-                return null;
-            }
+        //null value means empty cell
+        roverFacing: {
+            type: String,
+            default: null
         }
     },
     data() {

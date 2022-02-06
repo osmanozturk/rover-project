@@ -5,17 +5,17 @@
         </span>
         <span>
             <label :for="'rover-x-input-'+index"> X:
-                <input :id="'rover-x-input-'+index" type="number" min="0" :max="boardWidth" :placeholder="pleaseEnter">
+                <input :id="'rover-x-input-'+index" type="number" min="0" :max="boardWidth">
             </label>
         </span>
         <span>
             <label :for="'rover-y-input-'+index"> Y:
-                <input :id="'rover-y-input-'+index" type="number" min="0" :max="boardHeight" :placeholder="pleaseEnter">
+                <input :id="'rover-y-input-'+index" type="number" min="0" :max="boardHeight">
             </label>
         </span>
         <span>
             <label :for="'rover-facing-input-'+index"> Facing:
-                <select :id="'rover-facing-input-'+index" :placeholder="pleaseEnter">
+                <select :id="'rover-facing-input-'+index">
                     <option value="N">North</option>
                     <option value="S">South</option>
                     <option value="E">East</option>
@@ -35,7 +35,9 @@
 export default {
     name: 'RoverInput',
     props: {
-        index: Number
+        index: Number,
+        boardHeight: Number,
+        boardWidth: Number
     },
     data() {
         return {
