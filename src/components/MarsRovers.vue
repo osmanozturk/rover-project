@@ -37,22 +37,22 @@
         </div>
 
 
-    <div style="padding-bottom: 20px; margin-top: 20px">Rover Positions
-            <div>
+    <div v-show="boardSizeConfirmed" style="padding-bottom: 20px; margin-top: 20px">Rover Positions
+            <div style="margin-top: 20px;">
                 <!-- User will see a list of rovers to be placed and can give initial positions and facings to them -->
                 <rover-input v-if="!roversInitialized[0]" :index="0" :boardHeight="Number(boardHeight)" :boardWidth="Number(boardWidth)" 
                 @position-confirmed="rover => confirmRoverPosition(rover, 0)">
                 </rover-input>
 
                 <div v-else style="margin-top: 20px">
-                    Rover #0 X: {{rovers[0].x}} Y: {{rovers[0].y}}  Facing:{{rovers[0].facing}}
+                    Rover #0 X: {{rovers[0].x}} Y: {{rovers[0].y}}  Facing: {{rovers[0].facing}}
                 </div>
 
                         
             </div>
     </div>
 
-    <div style="padding-bottom: 20px; margin-top: 20px">Commands
+    <div v-show="allRoversInitialized()" style="padding-bottom: 20px; margin-top: 20px">Commands
             <div style="margin-top: 20px;">
                 <!-- User will see a list of rovers that are placed and can give commands to them -->
                 <command-input 
@@ -104,10 +104,6 @@ export default {
         }
     },
     computed: {
-        allRoversInitialized() {
-            //will be useful when we have multiple rovers
-            return this.roversInitialized.every(isInitialized => isInitialized === true);
-        },
         pleaseEnterPlaceholder() {
         return "Please give appropriate input"
         },
@@ -118,6 +114,10 @@ export default {
         }
     },
     methods: {
+        allRoversInitialized() {
+            //will be useful when we have multiple rovers
+            return this.roversInitialized.every(isInitialized => (isInitialized === true));
+        },
         //sending command as object with index in case if I decide to send the command readily parsed as an array in the future
         //it will be cleaner
         parseCommand(commandObj) {
@@ -150,13 +150,13 @@ export default {
                     rover.y+1 < this.boardHeight ? rover.y++ : null;
                     break;
                 case 'S':
-                    rover.y-1 > 0 ? rover.y-- : null;
+                    rover.y > 0 ? rover.y-- : null;
                     break;
                 case 'E':
                     rover.x+1 < this.boardWidth ? rover.x++ : null;
                     break;
                 case 'W':
-                    rover.y-1 > 0 ? rover.x-- : null;
+                    rover.x > 0 ? rover.x-- : null;
                     break;
             }
         },
@@ -180,8 +180,10 @@ export default {
             }
         },
         confirmBoardSize() {
-            //Todo input validation
-            if (this.boardWidth > 0 && this.boardHeight > 0) {
+            if (!Number.isNaN(this.boardWidth) && !Number.isNaN(this.boardHeight) && this.boardWidth > 0 && this.boardHeight > 0) {
+                //Saving board size as actual numbers to prevent possible bugs
+                this.boardHeight = Number(this.boardHeight);
+                this.boardWidth = Number(this.boardWidth);
                 this.calculateBoard(true);
                 this.boardSizeConfirmed = true;
             } else {
@@ -193,7 +195,9 @@ export default {
         confirmRoverPosition(rover, index) {
             //experimenting with only one rover
             //todo add multiple rover capability
-            //todo input validation
+            rover.x = Number(rover.x);
+            rover.y = Number(rover.y);
+            //Saving rover coordinates as actual numbers to prevent possible bugs
             this.$set(this.rovers, index, rover);
             this.roversInitialized[index] = true;
             //Vue.set makes the rovers reactive so that our deep watcher can detect the changes and recalculate the board

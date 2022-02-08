@@ -1,10 +1,10 @@
 <template>
     <div>
         <span>
-            Command # {{index}}
+            Command #{{index}}
         </span>
         <span>
-            <label :for="'command-input-'+index"> Command:
+            <label :for="'command-input-'+index"> Command: 
                 <input :id="'command-input-'+index" v-model="command"  type="text">
             </label>
         </span>
