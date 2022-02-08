@@ -6,7 +6,7 @@ MIA Mars rover coding challenge.
 ## Requirements
 
 For development, you will only need Node.js installed in your environment.
-This project was developed using node 16.10.0
+This project was developed using node version 16.10.0
 
 ### Node
 - #### Node installation on Windows
@@ -32,7 +32,7 @@ If the installation was successful, you should be able to run the following comm
     $ npm --version
     7.24.0
 
-If you need to update `npm`, you can make it using `npm`! Cool right? After running the following command, just open again the command line and be happy.
+If you need to update `npm`, you can make it using `npm`!
 
     $ npm install npm -g
 
