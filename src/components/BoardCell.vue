@@ -1,13 +1,13 @@
 <template>
     <span>
         <span v-if="roverFacing === null">
-            <span style="margin: 5px">
+            <span style="margin: 10px">
                 *
             </span>
         </span>
         <span v-else>
-            <span v-if="roverFacing === 'N'" style="margin: 5px">↑</span>
-            <span v-if="roverFacing === 'S'" style="margin: 5px">↓</span>
+            <span v-if="roverFacing === 'N'" style="margin: 9px">↑</span>
+            <span v-if="roverFacing === 'S'" style="margin: 9px">↓</span>
             <span v-if="roverFacing === 'E'" style="margin: 5px">→</span>
             <span v-if="roverFacing === 'W'" style="margin: 5px">←</span>
         </span>

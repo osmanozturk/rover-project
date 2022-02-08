@@ -37,23 +37,27 @@
         </div>
 
 
-    <div style="padding-bottom: 20px; margin-top: 20px">Initial positions of Rovers
+    <div style="padding-bottom: 20px; margin-top: 20px">Rover Positions
             <div>
                 <!-- User will see a list of rovers to be placed and can give initial positions and facings to them -->
-                <rover-input :index="0" :boardHeight="Number(boardHeight)" :boardWidth="Number(boardWidth)" 
-                @position-confirmed="rover => confirmRoverPosition(rover)">
-
+                <rover-input v-if="!roversInitialized[0]" :index="0" :boardHeight="Number(boardHeight)" :boardWidth="Number(boardWidth)" 
+                @position-confirmed="rover => confirmRoverPosition(rover, 0)">
                 </rover-input>
+
+                <div v-else style="margin-top: 20px">
+                    Rover #0 X: {{rovers[0].x}} Y: {{rovers[0].y}}  Facing:{{rovers[0].facing}}
+                </div>
+
                         
             </div>
     </div>
 
-        <div style="padding-bottom: 20px; margin-top: 20px">Commands
-            <div>
+    <div style="padding-bottom: 20px; margin-top: 20px">Commands
+            <div style="margin-top: 20px;">
                 <!-- User will see a list of rovers that are placed and can give commands to them -->
-                <command-input :index="0" 
-                @rover-command-sent="commandObj => parseCommand(commandObj)">
-
+                <command-input 
+                    :index="0" 
+                    @rover-command-sent="commandObj => parseCommand(commandObj)">
                 </command-input>
                         
             </div>
@@ -82,7 +86,8 @@ export default {
             boardWidth: 0,
             boardHeight: 0,
             rovers: [],
-            board: []
+            board: [],
+            roversInitialized: [false]
         }
     },
     created() {
@@ -99,6 +104,10 @@ export default {
         }
     },
     computed: {
+        allRoversInitialized() {
+            //will be useful when we have multiple rovers
+            return this.roversInitialized.every(isInitialized => isInitialized === true);
+        },
         pleaseEnterPlaceholder() {
         return "Please give appropriate input"
         },
@@ -121,7 +130,12 @@ export default {
                     case 'm':
                         this.move(index);
                         break;
-                    
+                    case 'l':
+                        this.turnNinetyDegrees(index, true);
+                        break;
+                    case 'r':
+                        this.turnNinetyDegrees(index, false);
+                        break;
                 }               
             });
             
@@ -145,11 +159,25 @@ export default {
                     rover.y-1 > 0 ? rover.x-- : null;
                     break;
             }
-            this.rovers[index] = rover;
         },
 
-        turnNinetyDegrees() {
-            //todo implement
+        turnNinetyDegrees(index, counterClockwise) {
+            //not doing anything if the turn is invalid
+            let rover = this.rovers[index];
+            switch (rover.facing) {
+                case 'N':
+                    rover.facing = counterClockwise ? 'W' : 'E'; 
+                    break;
+                case 'S':
+                    rover.facing = counterClockwise ? 'E' : 'W'; 
+                    break;
+                case 'E':
+                    rover.facing = counterClockwise ? 'N' : 'S'; 
+                    break;
+                case 'W':
+                    rover.facing = counterClockwise ? 'S' : 'N'; 
+                    break;
+            }
         },
         confirmBoardSize() {
             //Todo input validation
@@ -162,11 +190,12 @@ export default {
             
             return this.boardSizeConfirmed;
         },        
-        confirmRoverPosition(rover) {
+        confirmRoverPosition(rover, index) {
             //experimenting with only one rover
             //todo add multiple rover capability
             //todo input validation
-            this.$set(this.rovers, 0, rover);
+            this.$set(this.rovers, index, rover);
+            this.roversInitialized[index] = true;
             //Vue.set makes the rovers reactive so that our deep watcher can detect the changes and recalculate the board
         },
         calculateBoard(debug) {
